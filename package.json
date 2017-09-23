@@ -23,7 +23,7 @@
   "homepage": "https://github.com/minemidnight/markov-bot#readme",
   "dependencies": {
     "eris": "^0.7.2",
-    "markov-strings": "^1.3.4",
+    "markov-generator": "^1.2.2",
     "rethinkdbdash": "^2.3.31"
   }
 }

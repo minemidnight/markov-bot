@@ -1,6 +1,6 @@
 const Eris = require("eris");
 const config = require(`${__dirname}/../config.json`);
-const Markov = require("markov-strings");
+const Markov = require("markov-generator");
 
 global.bot = new Eris(config.token);
 require(`${__dirname}/rethink.js`);
@@ -81,16 +81,10 @@ bot.on("messageCreate", async message => {
 			messages = messages.concat(await r.table("messages").getAll(user, { index: "authorID" })("content").run());
 		}
 
-		const markov = new Markov(messages, {
-			maxLength: 2000,
-			minScore: 30,
-			checker: sentence => true
-		});
+		const chain = new Markov({ input: messages });
 
 		try {
-			await markov.buildCorpus();
-			const { string: msg } = await markov.generateSentence();
-			message.channel.createMessage(msg);
+			message.channel.createMessage(chain.makeChain());
 		} catch(err) {
 			message.channel.createMessage("Not enough words has been said by this person!");
 		}
