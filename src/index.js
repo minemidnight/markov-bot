@@ -82,7 +82,7 @@ bot.on("messageCreate", async message => {
 
 		const markov = new Markov(messages, {
 			maxLength: 2000,
-			minScore: 30
+			minScore: 10
 		});
 
 		await markov.buildCorpus();
