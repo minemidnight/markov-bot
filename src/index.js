@@ -10,6 +10,7 @@ let prefix;
 bot.on("ready", () => {
 	bot.editStatus("online", { game: "@Mark help" });
 	prefix = new RegExp(`^(?:${`<@!?${bot.user.id}>`}|mark|m!),?(?:\\s+)?([\\s\\S]+)`, "i");
+	console.log("-----------------------------------\nBot Ready");
 });
 
 bot.on("messageCreate", async message => {
@@ -57,7 +58,7 @@ bot.on("messageCreate", async message => {
 			message.channel.createMessage(`Added ${args[1]} (${args[0]}) to users`);
 		}
 	} else {
-		let users = message.content.split(" ");
+		let users = message.content && message.content.length ? message.content.split(" ") : [];
 		users.push(command);
 
 		const entries = Array.from(bot.usersTracked.entries());
