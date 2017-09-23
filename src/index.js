@@ -46,14 +46,14 @@ bot.on("messageCreate", async message => {
 		if(bot.usersTracked.has(args[0])) {
 			bot.usersTracked.delete(args[0]);
 			await r.table("users").get(args[0]).delete().run();
-			await r.table("messages").getAll(message.args[0], { index: "authorID" }).delete().run();
+			await r.table("messages").getAll(args[0], { index: "authorID" }).delete().run();
 
 			message.channel.createMessage(`Removed ${args[0]} from users`);
 		} else {
 			bot.usersTracked.set(args[0], args[1]);
 			await r.table("users").insert({ nickname: args[1], userID: args[0] }).run();
 
-			message.channel.createMessage(`Added ${args[0]} (${args[1]}) from users`);
+			message.channel.createMessage(`Added ${args[1]} (${args[0]}) to users`);
 		}
 	} else {
 		let users = message.content.split(" ");
