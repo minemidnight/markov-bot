@@ -18,15 +18,17 @@ bot.on("messageCreate", async message => {
 
 	const match = message.content.match(prefix);
 	if(!match && message.channel.guild) {
+		if(bot.usersTracked.has(message.author.id)) {
+			console.log(`Adding ${message.id} sent by ${message.author.id} (${message.author.username}) to database`);
+			await r.table("messages").insert({
+				authorID: message.author.id,
+				content: message.content, messageID: message.id
+			}).run();
+		}
+
 		return;
 	} else if(match) {
 		message.content = match[1].trim();
-	} else if(bot.usersTracked.has(message.author.id)) {
-		console.log(`Adding ${message.id} sent by ${message.author.id} (${message.author.username}) to database`);
-		await r.table("messages").insert({
-			authorID: message.author.id,
-			content: message.content, messageID: message.id
-		}).run();
 	}
 
 	let command;
