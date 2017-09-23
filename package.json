@@ -1,0 +1,28 @@
+{
+  "name": "markov-bot",
+  "version": "1.0.0",
+  "description": "Markov bot for discord",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/minemidnight/markov-bot.git"
+  },
+  "keywords": [
+    "markov",
+    "discord",
+    "bot"
+  ],
+  "author": "minemidnight",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/minemidnight/markov-bot/issues"
+  },
+  "homepage": "https://github.com/minemidnight/markov-bot#readme",
+  "dependencies": {
+    "eris": "^0.7.2",
+    "rethinkdbdash": "^2.3.31"
+  }
+}
