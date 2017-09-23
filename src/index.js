@@ -13,15 +13,16 @@ bot.on("ready", () => {
 });
 
 bot.on("messageCreate", async message => {
-	if(!bot.usersTracked.has(message.author.id)) {
-		r.table("messages").insert({ authorID: message.author.id, content: message.content, messageID: message.id }).run();
-	}
-
 	if(message.author.bot) return;
 
 	const match = message.content.match(prefix);
-	if(!match && message.channel.guild) return;
-	else if(match) message.content = match[1].trim();
+	if(!match && message.channel.guild) {
+		return;
+	} else if(match) {
+		message.content = match[1].trim();
+	} else if(bot.usersTracked.has(message.author.id)) {
+		r.table("messages").insert({ authorID: message.author.id, content: message.content, messageID: message.id }).run();
+	}
 
 	let command;
 	if(!~message.content.indexOf(" ")) {
