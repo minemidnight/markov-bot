@@ -81,3 +81,5 @@ bot.on("messageCreate", async message => {
 		message.channel.send(msg);
 	}
 });
+
+bot.connect();
