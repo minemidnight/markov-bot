@@ -44,12 +44,17 @@ bot.on("messageCreate", async message => {
 	command = command.toLowerCase().trim();
 
 	if(command === "users") {
-		let msg = "Users:\n";
-		Array.from(bot.usersTracked.entries()).forEach(([key, value]) => {
+		let page = ~~message.content;
+		if(page < 1) page = 1;
+		else if(page > Math.ceil(bot.usersTracked.size / 10)) page = bot.usersTracked.size;
+
+		let msg = `Users (${bot.usersTracked.size}):\n`;
+		Array.from(bot.usersTracked.entries()).slice((page - 1) * 10, page * 10).forEach(([key, value]) => {
 			let user = bot.users.has(key) ? `${bot.users.get(key).username}#${bot.users.get(key).discriminator}` : key;
 			msg += `${value} (${user})\n`;
 		});
 
+		msg += `\nPage ${page}/${Math.ceil(bot.usersTracked.size / 10)}`;
 		message.channel.createMessage(msg);
 	} else if(command === "toggleuser" && message.author.id === bot.config.ownerID) {
 		let args = message.content.split(" ");
@@ -95,7 +100,7 @@ bot.on("messageCreate", async message => {
 			messages = messages.concat(await r.table("messages").getAll(user, { index: "authorID" })("content").run());
 		}
 
-		const chain = new Markov({ input: messages });
+		const chain = new Markov({ input: messages, minLength: 5 });
 		try {
 			message.channel.createMessage(chain.makeChain());
 		} catch(err) {
