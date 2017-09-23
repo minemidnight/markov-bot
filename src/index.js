@@ -21,7 +21,7 @@ bot.on("messageCreate", async message => {
 
 	const match = message.content.match(prefix);
 	if(!match && message.channel.guild) return;
-	else if(match) message.content = match[1];
+	else if(match) message.content = match[1].trim();
 
 	let command;
 	if(!~message.content.indexOf(" ")) {
@@ -29,7 +29,7 @@ bot.on("messageCreate", async message => {
 		message.content = "";
 	} else {
 		command = message.content.substring(0, message.content.indexOf(" "));
-		message.content = message.content.substring(message.content.indexOf(" "));
+		message.content = message.content.substring(message.content.indexOf(" ")).trim();
 	}
 	command = command.toLowerCase().trim();
 
