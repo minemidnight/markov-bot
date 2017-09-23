@@ -1,4 +1,5 @@
 {
-	"token": "bot token",
-	"database": { options passed to rethinkdbdash }
+	"database": { options passed to rethinkdbdash },
+	"ownerID": "user ID allowed to add or remove users from markov",
+	"token": "bot token"
 }
