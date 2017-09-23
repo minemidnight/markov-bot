@@ -45,7 +45,7 @@ bot.on("messageCreate", async message => {
 		let msg = "Users:\n";
 		Array.from(bot.usersTracked.entries()).forEach(([key, value]) => {
 			let user = bot.users.has(key) ? `${bot.users.get(key).username}#${bot.users.get(key).discriminator}` : key;
-			msg += `${value} (${user})`;
+			msg += `${value} (${user})\n`;
 		});
 
 		message.channel.createMessage(msg);
@@ -68,15 +68,16 @@ bot.on("messageCreate", async message => {
 		users.push(command);
 
 		const entries = Array.from(bot.usersTracked.entries());
-		users = users.map(user => entries.find(entry => entry[0] === user || entry[1].toLowerCase() === user));
-		if(users.any(user => !user)) {
+		users = users.filter(user => entries.find(entry => entry[0] === user || entry[1].toLowerCase() === user));
+		if(!users || !users.length) {
 			message.channel.createMessage(`Invalid user(s) given`);
 			return;
 		}
 
 		let messages = [];
 		for(let user of users) {
-			messages = messages.concat(await r.table("messages").getAll(user[0], { index: "authorID" })("content").run());
+			user = entries.find(entry => entry[0] === user || entry[1].toLowerCase() === user)[0];
+			messages = messages.concat(await r.table("messages").getAll(user, { index: "authorID" })("content").run());
 		}
 
 		const markov = new Markov(messages, {
