@@ -22,7 +22,8 @@ bot.on("messageCreate", async message => {
 			console.log(`Adding ${message.id} sent by ${message.author.id} (${message.author.username}) to database`);
 			await r.table("messages").insert({
 				authorID: message.author.id,
-				content: message.content, messageID: message.id
+				content: message.cleanContent,
+				messageID: message.id
 			}).run();
 		}
 
@@ -86,9 +87,13 @@ bot.on("messageCreate", async message => {
 			checker: sentence => true
 		});
 
-		await markov.buildCorpus();
-		const { string: msg } = await markov.generateSentence();
-		message.channel.createMessage(msg);
+		try {
+			await markov.buildCorpus();
+			const { string: msg } = await markov.generateSentence();
+			message.channel.createMessage(msg);
+		} catch(err) {
+			message.channel.createMessage("Not enough words has been said by this person!");
+		}
 	}
 });
 
