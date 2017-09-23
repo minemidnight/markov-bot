@@ -82,7 +82,8 @@ bot.on("messageCreate", async message => {
 
 		const markov = new Markov(messages, {
 			maxLength: 2000,
-			minScore: 10
+			minScore: 30,
+			checker: sentence => true
 		});
 
 		await markov.buildCorpus();
