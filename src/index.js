@@ -40,7 +40,7 @@ bot.on("messageCreate", async message => {
 			msg += `${value} (${user})`;
 		});
 
-		message.channel.send(msg);
+		message.channel.createMessage(msg);
 	} else if(command === "toggleuser" && message.author.id === bot.config.ownerID) {
 		let args = message.content.split(" ");
 		if(bot.usersTracked.has(args[0])) {
@@ -48,12 +48,12 @@ bot.on("messageCreate", async message => {
 			await r.table("users").get(args[0]).delete().run();
 			await r.table("messages").getAll(message.args[0], { index: "authorID" }).delete().run();
 
-			message.channel.send(`Removed ${args[0]} from users`);
+			message.channel.createMessage(`Removed ${args[0]} from users`);
 		} else {
 			bot.usersTracked.set(args[0], args[1]);
 			await r.table("users").insert({ nickname: args[1], userID: args[0] }).run();
 
-			message.channel.send(`Added ${args[0]} (${args[1]}) from users`);
+			message.channel.createMessage(`Added ${args[0]} (${args[1]}) from users`);
 		}
 	} else {
 		let users = message.content.split(" ");
@@ -62,7 +62,7 @@ bot.on("messageCreate", async message => {
 		const entries = Array.from(bot.usersTracked.entries());
 		users = users.map(user => entries.find(entry => entry[0] === user || entry[1].toLowerCase() === user));
 		if(users.any(user => !user)) {
-			message.channel.send(`Invalid user(s) given`);
+			message.channel.createMessage(`Invalid user(s) given`);
 			return;
 		}
 
@@ -78,7 +78,7 @@ bot.on("messageCreate", async message => {
 
 		await markov.buildCorpus();
 		const { string: msg } = await markov.generateSentence();
-		message.channel.send(msg);
+		message.channel.createMessage(msg);
 	}
 });
 
