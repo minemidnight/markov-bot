@@ -10,7 +10,7 @@ let prefix;
 bot.on("ready", () => {
 	bot.editStatus("online", { game: "@Mark help" });
 	prefix = new RegExp(`^(?:${`<@!?${bot.user.id}>`}|mark|m!),?(?:\\s+)?([\\s\\S]+)`, "i");
-	console.log("-----------------------------------\nBot Ready");
+	console.log("-----------------\nBot Ready\n-----------------");
 });
 
 bot.on("messageCreate", async message => {
@@ -22,7 +22,11 @@ bot.on("messageCreate", async message => {
 	} else if(match) {
 		message.content = match[1].trim();
 	} else if(bot.usersTracked.has(message.author.id)) {
-		r.table("messages").insert({ authorID: message.author.id, content: message.content, messageID: message.id }).run();
+		console.log(`Adding ${message.id} sent by ${message.author.id} (${message.author.username}) to database`);
+		await r.table("messages").insert({
+			authorID: message.author.id,
+			content: message.content, messageID: message.id
+		}).run();
 	}
 
 	let command;
