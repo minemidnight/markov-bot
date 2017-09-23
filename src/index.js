@@ -66,6 +66,13 @@ bot.on("messageCreate", async message => {
 			message.channel.createMessage(`Added ${args[1]} (${args[0]}) to users`);
 		}
 	} else {
+		if(!cooldowns.has(message.author.id)) cooldowns.set(message.author.id, 1);
+		else cooldowns.set(message.author.id, cooldowns.get(message.author.id) + 1);
+		setTimeout(() => {
+			if(cooldowns.get(message.author.id) === 1) cooldowns.delete(message.author.id);
+			else cooldowns.set(message.author.id, cooldowns.get(message.author.id) - 1);
+		}, 5000 / 3);
+
 		if(cooldowns.has(message.author.id) && cooldowns.get(message.author.id) >= 3) {
 			message.channel.createMessage("You are currently on cooldown!");
 			return;
@@ -81,13 +88,6 @@ bot.on("messageCreate", async message => {
 			message.channel.createMessage(`Invalid user(s) given`);
 			return;
 		}
-
-		if(!cooldowns.has(message.author.id)) cooldowns.set(message.author.id, 1);
-		else cooldowns.set(message.author.id, cooldowns.get(message.author.id) + 1);
-		setTimeout(() => {
-			if(cooldowns.get(message.author.id) === 1) cooldowns.delete(message.author.id);
-			else cooldowns.set(message.author.id, cooldowns.get(message.author.id) - 1);
-		}, 5000 / 3);
 
 		let messages = [];
 		for(let user of users) {
