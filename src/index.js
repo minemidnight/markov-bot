@@ -86,19 +86,25 @@ bot.on("messageCreate", async message => {
 		let users = message.content && message.content.length ? message.content.split(" ") : [];
 		users.push(command);
 
+		let messages = [];
 		const entries = Array.from(bot.usersTracked.entries());
-		users = users.filter((user, i, self) =>
-			self.indexOf(user) === i && entries.find(entry => entry[0] === user || entry[1].toLowerCase() === user));
-		if(!users || !users.length) {
-			message.channel.createMessage(`Invalid user(s) given`);
-			return;
+		if(users[0] !== "all") {
+			users = users.filter((user, i, self) =>
+				self.indexOf(user) === i && entries.find(entry => entry[0] === user || entry[1].toLowerCase() === user));
+
+			if(!users || !users.length) {
+				message.channel.createMessage(`Invalid user(s) given`);
+				return;
+			}
+
+			for(let user of users) {
+				user = entries.find(entry => entry[0] === user || entry[1].toLowerCase() === user)[0];
+				messages = messages.concat(await r.table("messages").getAll(user, { index: "authorID" })("content").run());
+			}
+		} else {
+			messages = await r.table("messages")("content").run();
 		}
 
-		let messages = [];
-		for(let user of users) {
-			user = entries.find(entry => entry[0] === user || entry[1].toLowerCase() === user)[0];
-			messages = messages.concat(await r.table("messages").getAll(user, { index: "authorID" })("content").run());
-		}
 
 		const chain = new Markov({ input: messages, minLength: 5 });
 		try {
